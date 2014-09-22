@@ -10,13 +10,16 @@ namespace lonerevision
     {
         static void Main(string[] args)
         {
-            Console.Clear();
-            int number = ReadInt("Skriv antal löner du vill mata in:");
-             ReadSalaries(number);
+            
 
             do
             {
-                //ViewResult();
+                Console.Clear();
+                int number = ReadInt("Skriv antal löner du vill mata in:");
+                int[] salaries;
+                salaries = ReadSalaries(number);
+
+                ViewResult(salaries);
 
 
             } while (IsCounting());
@@ -36,16 +39,16 @@ namespace lonerevision
             string input;
             while (true)
             {
-                Console.Write(prompt);
+                Console.WriteLine(prompt);
                 input = Console.ReadLine(); //Read int får ett värde från användaren
                 try
                 {
                     value = int.Parse(input);
-                    if (value >= 2) //Om det användaren skrivit är lika med eller större än två
+                    if (value <= 2) //Om det användaren skrivit är lika med eller större än två
                     {
-                        break;
+                        throw new OverflowException();
                     }
-                    throw new Exception();
+                    break;
                 }
                 catch (FormatException) //if the for doesnt work, then the catch will come up
                 {
@@ -61,8 +64,6 @@ namespace lonerevision
             return value;
         } //användaren skriver in hur många löner han vill jobba med
 
-
-
         static int[] ReadSalaries(int count) //Användaren fyller värden i lönerna. ANtal löner från ReadInt
         {
             
@@ -71,22 +72,29 @@ namespace lonerevision
             for (int i = 1; i <= count; i++)
             {
                 Console.Write("Skriv in lön nummer {0}:", i);
-                salaries[i]= int.Parse(Console.ReadLine());
+                salaries[i]= byte.Parse(Console.ReadLine());
 
             }
             return salaries;
         }
 
-
-
-        static int GetDispersion(int[] source)
+        static int GetDispersion(int[] source) //Räknar ut lönespridningen
         {
             return (source.Max() - source.Min());
         }
 
         static int GetMedian(int[] source)
         {
-         throw new Exception();
+            Array.Sort(source);
+            int arrayLength = source.GetLength(0);
+            if (arrayLength % 2 != 0) //om det är udda tal
+            {
+                return ((source[arrayLength / 2 - 1] + source[arrayLength / 2]) / 2); //Räknar ut första medelvärdet -1(för att den avrundar uppåt) och sedan det andra. för att sedan addera dessa och dela dem på två.
+            }
+            else
+            {
+                return (source[arrayLength / 2]);
+            }
         }
 
         static void ViewMessage(string message, bool isError)
@@ -105,7 +113,10 @@ namespace lonerevision
 
         static void ViewResult(int[] salaries)
         {
-            
+            Console.WriteLine("---------------------------------");
+            Console.WriteLine("{0,-15}{1,15:c0}", "Medianlönen:", GetMedian(salaries));
+
+            Console.WriteLine("---------------------------------");
         }
     }
 }
