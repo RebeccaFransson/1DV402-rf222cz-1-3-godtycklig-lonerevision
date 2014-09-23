@@ -15,24 +15,33 @@ namespace lonerevision
             do
             {
                 Console.Clear();
-                int number = ReadInt("Skriv antal löner du vill mata in:");
+                int number = ReadInt("Skriv antal löner du vill mata in:      ");
                 int[] salaries;
                 salaries = ReadSalaries(number);
 
-                ViewResult(salaries);
+                int[] salariescopy = new int[salaries.GetLength(0)];
+                Array.Copy(salaries, salariescopy, salaries.GetLength(0));//gör en kopia av salaries som ej är sorterad
+
+                ViewResult(salaries, salariescopy);
 
 
             } while (IsCounting());
 
         }
-
+        /// <summary>
+        /// avslutar genom ESC, tryck valfri tangent för att börja igen
+        /// </summary>
+        /// <returns></returns>
         static bool IsCounting()
         {
-            //clera innan man börjar om
             ViewMessage(("Klicka på valfri tangent för att fortsätta. \nEsc avslutar programmet"), false);
             return Console.ReadKey(true).Key != ConsoleKey.Escape;
-        } //avslutar genom ESC, tryck valfri tangent för att börja igen
-
+        } 
+        /// <summary>
+        /// Här skriver användaren in hur många löner som han ska ge värden till
+        /// </summary>
+        /// <param name="prompt">"Skriv antal löner du vill mata in:      "</param>
+        /// <returns></returns>
         static int ReadInt(string prompt)
         {
             int value = 0;
@@ -62,29 +71,40 @@ namespace lonerevision
                 }
              }
             return value;
-        } //användaren skriver in hur många löner han vill jobba med
-
-        static int[] ReadSalaries(int count) //Användaren fyller värden i lönerna. ANtal löner från ReadInt
+        } 
+        /// <summary>
+        /// Användaren fyller värden i lönerna. Antal löner från ReadInt
+        /// </summary>
+        /// <param name="count">Antal löner som skrivs in</param>
+        /// <returns></returns>
+        static int[] ReadSalaries(int count) 
         {
-            
             int []salaries = new int [count]; //salaries en array med användarens amount
           
             for (int i = 0; i < count; i++)
             {
-                Console.Write("Skriv in lön nummer {0}:       ", i+1);
-                salaries[i]= int.Parse(Console.ReadLine());
+                salaries[i] = ReadInt(String.Format("Skriv in lön nummer {0}:       ", i+1));
 
             }
             return salaries;
         }
-
-        static int GetDispersion(int[] source) //Räknar ut lönespridningen
+        /// <summary>
+        /// Räknar ut lönespridningen
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        static int GetDispersion(int[] source) 
         {
             return (source.Max() - source.Min());
         }
-
+        /// <summary>
+        /// Räknar ut median lönen, både för udda många tal och lika många tal
+        /// </summary>
+        /// <param name="source">Lönerna som användaren skriver in</param>
+        /// <returns></returns>
         static int GetMedian(int[] source)
         {
+           
             Array.Sort(source);
             int arrayLength = source.GetLength(0);
             if (arrayLength % 2 != 0) //om det är udda tal
@@ -96,8 +116,12 @@ namespace lonerevision
                 return ((source[arrayLength / 2 - 1] + source[arrayLength / 2]) / 2); //Räknar ut första medelvärdet -1(för att den avrundar uppåt) och sedan det andra. för att sedan addera dessa och dela dem på två.
            
             }
-        }
-
+        } 
+        /// <summary>
+     /// Metoden som skapar mina meddelanden som kommer skrivas ut
+     /// </summary>
+     /// <param name="message"> Meddelandet somkommer skrivas ut</param>
+     /// <param name="isError">Aktiverar mitt Fel meddelandet</param>
         static void ViewMessage(string message, bool isError)
         {
             if (isError)
@@ -111,8 +135,11 @@ namespace lonerevision
             Console.WriteLine("\n{0}",message); //Felmeddelandet
             Console.ResetColor();
         }
-
-        static void ViewResult(int[] salaries)
+        /// <summary>
+        /// Är skriver jag ut allting som jag vill ska visas i konsollfönstret
+        /// </summary>
+        /// <param name="salaries"> Lönerna användaren skrivit in</param>
+        static void ViewResult(int[] salaries, int[] salariescopy)
         {
 
             Console.WriteLine("---------------------------------");
@@ -123,20 +150,20 @@ namespace lonerevision
 
             for (int i = 0; i < salaries.GetLength(0); i++) //skriver ut lönerna med en loop ich kallar på arrayn
             {
-               switch(i % 3)
-               {
-                   case 0:
-                       Console.Write("{0,10}", salaries[i]);
-                       break;
+                switch (i % 3)
+                {
+                    case 0:
+                        Console.Write("{0,10}", salariescopy[i]);
+                        break;
                     case 1:
-                       Console.Write("{0,10}", salaries[i]);
-                       break;
+                        Console.Write("{0,10}", salariescopy[i]);
+                        break;
                     case 2:
-                       Console.WriteLine("{0,10}", salaries[i]);
-                       break;
+                        Console.WriteLine("{0,10}", salariescopy[i]);
+                        break;
 
-               }
-        }
+                }
+            }
 
             
         }
